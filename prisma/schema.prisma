@@ -24,8 +24,8 @@ model User {
   threads    Thread[]
   likes      Like[]
   replies    Reply[]
-  followers  Follow[] @relation("UserFollowed")
-  followings Follow[] @relation("UserFollows")
+  followers  Follow[] @relation("UserFollows")
+  followings Follow[] @relation("UserFollowed")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
