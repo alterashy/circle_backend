@@ -7,10 +7,8 @@ const router = express.Router();
 
 router.use(rateLimit("follow"));
 
-router.get("/follower/:id", authCheck, followController.getFollowers);
-router.get("/following/:id", authCheck, followController.getFollowing);
-router.get("/:id/followers", followController.getFollowerCount);
-router.get("/:id/following", followController.getFollowingCount);
+router.get("/followers/:id", authCheck, followController.getFollowersById);
+router.get("/followings/:id", authCheck, followController.getFollowingById);
 router.post("/", authCheck, followController.createFollow);
 router.delete("/:id", authCheck, followController.deleteFollow);
 

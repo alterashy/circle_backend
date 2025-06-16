@@ -8,6 +8,7 @@ const router = express.Router();
 router.use(rateLimit("profile"));
 
 router.get("/:userId", profileController.getUserProfile);
+router.get("/:username", profileController.getUserProfileByUsername);
 router.put("/", authCheck, profileController.updateUserProfile);
 
 export default router;

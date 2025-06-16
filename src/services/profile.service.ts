@@ -4,49 +4,57 @@ import { UpdateProfileDTO } from "../dtos/profile.dto";
 const prisma = new PrismaClient();
 
 class profileService {
-	async getUserProfile(userId: string) {
-		return prisma.profile.findUnique({
-			where: { userId },
-		});
-	}
-	async updateUserProfile(userId: string, dto: UpdateProfileDTO) {
-		const profile = await prisma.profile.findUnique({ where: { userId } });
-		if (!profile) throw new Error("Profile not found");
+  async getUserProfile(userId: string) {
+    return prisma.profile.findUnique({
+      where: { userId },
+    });
+  }
 
-		const { username, ...profileData } = dto;
+  async getUserProfileByUsername(username: string) {
+    return await prisma.user.findUnique({
+      include: { profile: true },
+      where: { username },
+    });
+  }
 
-		if (username) {
-			const existingUser = await prisma.user.findUnique({
-				where: { username },
-			});
+  async updateUserProfile(userId: string, dto: UpdateProfileDTO) {
+    const profile = await prisma.profile.findUnique({ where: { userId } });
+    if (!profile) throw new Error("Profile not found");
 
-			if (existingUser && existingUser.id !== userId) {
-				throw new Error("Username already taken");
-			}
-		}
+    const { username, ...profileData } = dto;
 
-		const [updatedUser, updatedProfile] = await prisma.$transaction([
-			username
-				? prisma.user.update({
-						where: { id: userId },
-						data: { username },
-				  })
-				: prisma.user.findUnique({ where: { id: userId } }),
+    if (username) {
+      const existingUser = await prisma.user.findUnique({
+        where: { username },
+      });
 
-			prisma.profile.update({
-				where: { userId },
-				data: profileData,
-			}),
-		]);
+      if (existingUser && existingUser.id !== userId) {
+        throw new Error("Username already taken");
+      }
+    }
 
-		return {
-			user: {
-				id: updatedUser?.id,
-				username: updatedUser?.username,
-			},
-			profile: updatedProfile,
-		};
-	}
+    const [updatedUser, updatedProfile] = await prisma.$transaction([
+      username
+        ? prisma.user.update({
+            where: { id: userId },
+            data: { username },
+          })
+        : prisma.user.findUnique({ where: { id: userId } }),
+
+      prisma.profile.update({
+        where: { userId },
+        data: profileData,
+      }),
+    ]);
+
+    return {
+      user: {
+        id: updatedUser?.id,
+        username: updatedUser?.username,
+      },
+      profile: updatedProfile,
+    };
+  }
 }
 
 export default new profileService();
