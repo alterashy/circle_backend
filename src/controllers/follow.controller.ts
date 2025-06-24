@@ -4,6 +4,7 @@ import {
   deleteFollowSchema,
 } from "../schemas/follow.schema";
 import followService from "../services/follow.service";
+import { CreateFollowDTO, DeleteFollowDTO } from "../dtos/follow.dto";
 
 class FollowController {
   async getFollowersById(req: Request, res: Response, next: NextFunction) {
@@ -26,44 +27,42 @@ class FollowController {
     }
   }
 
-  async createFollow(req: Request, res: Response, next: NextFunction) {
-    /*  #swagger.requestBody = {
-                  required: true,
-                  content: {
-                      "application/json": {
-                          schema: {
-                              $ref: "#/components/schemas/CreateFollowDTO"
-                          }  
-                      }
-                  }
-              } 
-          */
-    try {
-      const body = req.body;
-      const userId = (req as any).user.id;
-      const { id } = await createFollowSchema.validateAsync(body);
+  async create(req: Request, res: Response) {
+    const body: CreateFollowDTO = req.body;
 
-      await followService.createFollow(userId, id);
-      res.json({
-        message: "Follow success!",
-      });
-    } catch (error) {
-      next(error);
+    try {
+      const follow = await followService.createFollow(
+        body.followerId,
+        body.followingId
+      );
+      res.status(201).json({ message: "Followed successfully", data: follow });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || "Failed to follow" });
     }
   }
 
-  async deleteFollow(req: Request, res: Response, next: NextFunction) {
-    try {
-      const params = req.params;
-      const userId = (req as any).user.id;
-      const { id } = await deleteFollowSchema.validateAsync(params);
+  async delete(req: Request, res: Response) {
+    const body: DeleteFollowDTO = req.body;
 
-      await followService.deleteFollow(id);
-      res.json({
-        message: "Unfollow success!",
-      });
+    try {
+      const follow = await followService.deleteFollow(
+        body.followerId,
+        body.followingId
+      );
+      res.json({ message: "Unfollowed successfully", data: follow });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message || "Failed to unfollow" });
+    }
+  }
+
+  async check(req: Request, res: Response) {
+    const { followerId, followingId } = req.params;
+
+    try {
+      const follow = await followService.checkFollow(followerId, followingId);
+      res.json({ message: "Check follow success", data: follow });
     } catch (error) {
-      next(error);
+      res.status(500).json({ message: "Failed to check follow", error });
     }
   }
 }

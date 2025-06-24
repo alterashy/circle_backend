@@ -9,5 +9,7 @@ router.use(rateLimit("reply"));
 
 router.get("/:threadId", authCheck, replyController.getRepliesByThreadId);
 router.post("/:threadId", authCheck, replyController.createReply);
+router.put("/:id", authCheck, replyController.updateReply);
+router.delete("/:id", authCheck, replyController.deleteReply);
 
 export default router;

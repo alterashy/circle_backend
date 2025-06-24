@@ -31,6 +31,15 @@ class ReplyService {
       },
     });
   }
+
+  async updateReply(id: string, data: CreateReplyDTO) {
+    const { content } = data;
+    return await prisma.reply.update({ where: { id }, data: { content } });
+  }
+
+  async deleteReply(id: string) {
+    return await prisma.reply.delete({ where: { id } });
+  }
 }
 
 export default new ReplyService();

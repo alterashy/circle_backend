@@ -46,6 +46,28 @@ class ReplyController {
       next(error);
     }
   }
+
+  async updateReply(req: Request, res: Response, next: NextFunction) {
+    try {
+      const replyId = req.params.replyId;
+      const body = req.body;
+      const validatedBody = await createReplySchema.validateAsync(body);
+      const reply = await replyService.updateReply(replyId, validatedBody);
+      res.json(reply);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteReply(req: Request, res: Response, next: NextFunction) {
+    try {
+      const replyId = req.params.replyId;
+      const deleted = await replyService.deleteReply(replyId);
+      res.json(deleted);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new ReplyController();

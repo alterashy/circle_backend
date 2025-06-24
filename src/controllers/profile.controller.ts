@@ -46,41 +46,36 @@ class profileController {
       let avatarUrl: string = "";
       let bannerUrl: string = "";
 
-      if (req.file) {
-        avatarUrl = await new Promise((resolve, reject) => {
-          if (req.file) {
-            try {
-              const stream = cloudinary.uploader.upload_stream(
-                {},
-                (error, result) => {
-                  if (error) return console.error(error);
-                  resolve(result?.secure_url || "");
-                }
-              );
-              streamifier.createReadStream(req.file.buffer).pipe(stream);
-            } catch (error) {
-              reject(error);
+      const files = req.files as {
+        avatarUrl?: Express.Multer.File[];
+        bannerUrl?: Express.Multer.File[];
+      };
+
+      if (files?.avatarUrl?.[0]) {
+        const avatarFile = files.avatarUrl[0];
+        avatarUrl = await new Promise<string>((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {},
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result?.secure_url || "");
             }
-          }
+          );
+          streamifier.createReadStream(avatarFile.buffer).pipe(stream);
         });
       }
 
-      if (req.file) {
-        bannerUrl = await new Promise((resolve, reject) => {
-          if (req.file) {
-            try {
-              const stream = cloudinary.uploader.upload_stream(
-                {},
-                (error, result) => {
-                  if (error) return console.error(error);
-                  resolve(result?.secure_url || "");
-                }
-              );
-              streamifier.createReadStream(req.file.buffer).pipe(stream);
-            } catch (error) {
-              reject(error);
+      if (files?.bannerUrl?.[0]) {
+        const bannerFile = files.bannerUrl[0];
+        bannerUrl = await new Promise<string>((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {},
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result?.secure_url || "");
             }
-          }
+          );
+          streamifier.createReadStream(bannerFile.buffer).pipe(stream);
         });
       }
 

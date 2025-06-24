@@ -4,12 +4,10 @@ import { prisma } from "../libs/prisma";
 class FollowService {
   async getFollowersById(userId: string) {
     return await prisma.follow.findMany({
-      where: { followerId: userId },
+      where: { followingId: userId },
       include: {
-        following: {
-          include: {
-            profile: true,
-          },
+        follower: {
+          include: { profile: true },
         },
       },
     });
@@ -17,30 +15,49 @@ class FollowService {
 
   async getFollowingsById(userId: string) {
     return await prisma.follow.findMany({
-      where: { followingId: userId },
+      where: { followerId: userId },
       include: {
-        follower: {
-          include: {
-            profile: true,
-          },
+        following: {
+          include: { profile: true },
         },
       },
     });
   }
 
-  async createFollow(userId: string, followingId: string) {
-    return await prisma.follow.create({
-      data: {
+  async createFollow(followerId: string, followingId: string) {
+    if (followerId === followingId) throw new Error("Cannot follow yourself");
+
+    const existingFollow = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: { followerId, followingId },
+      },
+    });
+
+    if (existingFollow) {
+      throw new Error("Already following");
+    }
+
+    return prisma.follow.create({
+      data: { followerId, followingId },
+    });
+  }
+
+  async deleteFollow(followerId: string, followingId: string) {
+    return prisma.follow.delete({
+      where: {
+        followerId_followingId: { followerId, followingId },
+      },
+    });
+  }
+
+  async checkFollow(userId: string, followingId: string) {
+    return await prisma.follow.findFirst({
+      where: {
         followerId: userId,
         followingId: followingId,
       },
     });
   }
-
-  async deleteFollow(id: string) {
-    return await prisma.follow.delete({
-      where: { id },
-    });
-  }
 }
+
 export default new FollowService();
