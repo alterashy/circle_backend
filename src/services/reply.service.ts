@@ -1,10 +1,10 @@
 import { CreateReplyDTO } from "../dtos/reply.dto";
-import { prisma } from "../libs/prisma";
+import prisma from "../libs/prisma";
 
 class ReplyService {
-  async getRepliesByThreadId(threadId: string) {
+  async getRepliesByThreadId(postId: string) {
     return await prisma.reply.findMany({
-      where: { threadId },
+      where: { postId },
       include: {
         user: {
           omit: {
@@ -21,11 +21,11 @@ class ReplyService {
     });
   }
 
-  async createReply(userId: string, threadId: string, data: CreateReplyDTO) {
+  async createReply(userId: string, postId: string, data: CreateReplyDTO) {
     const { content } = data;
     return await prisma.reply.create({
       data: {
-        threadId,
+        postId,
         content,
         userId,
       },

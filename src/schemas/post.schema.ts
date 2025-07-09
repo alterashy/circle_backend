@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { CreateThreadDTO, UpdateThreadDTO } from "../dtos/thread.dto";
+import { CreateThreadDTO, UpdateThreadDTO } from "../dtos/post.dto";
 
 export const createThreadSchema = Joi.object<CreateThreadDTO>({
   content: Joi.string().max(2000).optional(),

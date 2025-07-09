@@ -6,8 +6,8 @@ import { createReplySchema } from "../schemas/reply.schema";
 class ReplyController {
   async getRepliesByThreadId(req: Request, res: Response, next: NextFunction) {
     try {
-      const threadId = req.params.threadId;
-      const replies = await replyService.getRepliesByThreadId(threadId);
+      const postId = req.params.postId;
+      const replies = await replyService.getRepliesByThreadId(postId);
       res.json(replies);
     } catch (error) {
       next(error);
@@ -15,27 +15,15 @@ class ReplyController {
   }
 
   async createReply(req: Request, res: Response, next: NextFunction) {
-    /*  #swagger.requestBody = {
-              required: true,
-              content: {
-                  "multipart/form-data": {
-                      schema: {
-                          $ref: "#/components/schemas/CreateReplyDTO"
-                      }  
-                  }
-              }
-          } 
-      */
-
     try {
-      const threadId = req.params.threadId;
+      const postId = req.params.postId;
       const body = req.body;
       const userId = (req as any).user.id;
-      console.log(threadId, body, userId);
+      console.log(postId, body, userId);
       const validatedBody = await createReplySchema.validateAsync(body);
       const reply = await replyService.createReply(
         userId,
-        threadId,
+        postId,
         validatedBody
       );
       res.json({

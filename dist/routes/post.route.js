@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const post_controller_1 = __importDefault(require("../controllers/post.controller"));
+const upload_image_middleware_1 = require("../middlewares/upload-image.middleware");
+const auth_check_middleware_1 = require("../middlewares/auth-check.middleware");
+const rate_limit_middleware_1 = require("../middlewares/rate-limit.middleware");
+const router = express_1.default.Router();
+router.use((0, rate_limit_middleware_1.rateLimit)("post"));
+router.get("/", auth_check_middleware_1.authCheck, post_controller_1.default.getAllPosts);
+router.get("/:id", auth_check_middleware_1.authCheck, post_controller_1.default.getPostById);
+router.get("/feed", auth_check_middleware_1.authCheck, post_controller_1.default.getFeedPosts);
+router.get("/explore", auth_check_middleware_1.authCheck, post_controller_1.default.getExplorePosts);
+router.get("/user/:userId", auth_check_middleware_1.authCheck, post_controller_1.default.getPostsByUser);
+router.get("/username/:username", auth_check_middleware_1.authCheck, post_controller_1.default.getPostsByUsername);
+router.post("/", auth_check_middleware_1.authCheck, upload_image_middleware_1.uploadImage.single("images"), post_controller_1.default.createPost);
+router.patch("/:id", auth_check_middleware_1.authCheck, upload_image_middleware_1.uploadImage.single("images"), post_controller_1.default.createPost);
+router.delete("/:id", auth_check_middleware_1.authCheck, post_controller_1.default.deletePost);
+exports.default = router;

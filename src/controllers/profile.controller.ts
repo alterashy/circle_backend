@@ -30,18 +30,6 @@ class profileController {
   }
 
   async updateUserProfile(req: Request, res: Response, next: NextFunction) {
-    /*  #swagger.requestBody = {
-              required: true,
-              content: {
-                  "multipart/form-data": {
-                      schema: {
-                          $ref: "#/components/schemas/UpdateProfiledDTO"
-                      }  
-                  }
-              }
-          } 
-      */
-
     try {
       let avatarUrl: string = "";
       let bannerUrl: string = "";

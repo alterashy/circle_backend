@@ -8,6 +8,8 @@ const router = express.Router();
 router.use(rateLimit("like"));
 
 router.post("/", authCheck, likeController.createLike);
-router.delete("/:threadId", authCheck, likeController.deleteLike);
+router.post("/reply", authCheck, likeController.createLikeReply);
+router.delete("/:postId", authCheck, likeController.deleteLike);
+router.delete("/reply/:replyId", authCheck, likeController.deleteLikeReply);
 
 export default router;

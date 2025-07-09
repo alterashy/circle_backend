@@ -1,26 +1,39 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
+import { HttpStatus } from "../utils/httpStatus";
+import { jsonResponse } from "../utils/jsonResppnse";
 
 const router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
-	res.send("Welcome to Circle API 😁!");
+  res
+    .status(HttpStatus.OK)
+    .json(
+      jsonResponse("success", HttpStatus.OK, "CIRCLE API is working properly")
+    );
 });
 
 router.post("/", (req: Request, res: Response) => {
-	const { fullName, email, address } = req.body;
-	res.json({
-		fullName,
-		email,
-		address,
-	});
+  res
+    .status(HttpStatus.OK)
+    .json(
+      jsonResponse("success", HttpStatus.OK, "POST API is working properly")
+    );
 });
 
 router.patch("/", (req: Request, res: Response) => {
-	res.send("Welcome to PATCH!");
+  res
+    .status(HttpStatus.OK)
+    .json(
+      jsonResponse("success", HttpStatus.OK, "PATCH API is working properly")
+    );
 });
 
 router.delete("/", (req: Request, res: Response) => {
-	res.send("Welcome to DELETE!");
+  res
+    .status(HttpStatus.OK)
+    .json(
+      jsonResponse("success", HttpStatus.OK, "DELETE API is working properly")
+    );
 });
 
 export default router;

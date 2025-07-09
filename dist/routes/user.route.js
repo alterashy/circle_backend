@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const user_controller_1 = __importDefault(require("../controllers/user.controller"));
+const rate_limit_middleware_1 = require("../middlewares/rate-limit.middleware");
+const auth_check_middleware_1 = require("../middlewares/auth-check.middleware");
+const router = express_1.default.Router();
+router.use((0, rate_limit_middleware_1.rateLimit)("user"));
+router.get("/search", auth_check_middleware_1.authCheck, user_controller_1.default.getUsersSearch);
+router.get("/", user_controller_1.default.getUsers);
+router.get("/suggest", auth_check_middleware_1.authCheck, user_controller_1.default.getSuggestedUsers);
+router.get("/:id", user_controller_1.default.getUserById);
+router.get("/profile/:username", user_controller_1.default.getUserByUsername);
+router.post("/", user_controller_1.default.createUser);
+router.patch("/:id", user_controller_1.default.updateUserById);
+router.delete("/:id", user_controller_1.default.deleteUserById);
+exports.default = router;
