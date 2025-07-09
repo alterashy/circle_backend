@@ -22,9 +22,9 @@ app.use((0, cors_1.default)({
     origin: [
         "http://localhost:5173",
         "http://localhost:5173/circle",
-        "http://localhost:4173",
-        "https://b59-circle.vercel.app",
+        "https://circle-app-fe-x1wr.vercel.app",
     ],
+    credentials: true,
 }));
 app.use(express_1.default.json());
 app.use("/circle", root_route_1.default);

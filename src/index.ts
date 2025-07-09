@@ -23,7 +23,6 @@ app.use(
       "http://localhost:5173/circle",
       "https://circle-app-fe-x1wr.vercel.app",
     ],
-    credentials: true,
   })
 );
 
