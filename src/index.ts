@@ -17,13 +17,14 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(
-  cors({
+  "*", cors({
     origin: [
       "http://localhost:5173",
       "http://localhost:5173/circle",
       "https://circle-app-fe-x1wr.vercel.app",
       "https://circle-app-fe-x1wr.vercel.app/",
     ],
+    credentials: true
   })
 );
 
